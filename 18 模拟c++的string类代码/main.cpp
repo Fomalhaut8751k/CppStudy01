@@ -14,6 +14,7 @@ public:
 		else{
 			_pstr = new char[strlen(p) + 1];  // 有效字符个数+末尾'\0'
 			strcpy(_pstr, p);
+
 		}
 	}
 private:
