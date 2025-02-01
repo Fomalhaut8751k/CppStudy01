@@ -245,7 +245,7 @@ int main() {
 #endif
 
 
-#if 1
+#if 0  // 外部修改成员变量
 
 class Test {
 public:
@@ -276,4 +276,16 @@ int main() {
 	return 0;
 }
 
+#endif
+
+#if 1  // 定位new
+int main() {
+	int* p = new int(10);
+	cout << *p << endl;
+	new (p) int(2);
+	cout << *p << endl;
+
+	delete p;
+	return 0;
+}
 #endif

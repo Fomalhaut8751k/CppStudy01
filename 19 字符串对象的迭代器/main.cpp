@@ -12,7 +12,7 @@ public:
 			_pstr = new char[1];
 			*_pstr = '\0';
 		}
-		else{
+		else {
 			_pstr = new char[strlen(p) + 1];  // 有效字符个数+末尾'\0'
 			strcpy(_pstr, p);
 		}
@@ -56,6 +56,12 @@ public:
 		return strcmp(_pstr, s2._pstr) == 0;
 	}
 
+	// !=
+	bool operator!=(const String& s2) const {
+		return strcmp(_pstr, s2._pstr) != 0;
+	}
+
+	// 长度
 	int length() const {
 		return strlen(_pstr);
 	}
@@ -70,9 +76,35 @@ public:
 		return _pstr[index];
 	}
 
-private:
-	char* _pstr; 
 
+	// 给string字符串类型提供迭代器的实现
+	class iterator {
+	public:
+		iterator(char* p = nullptr) : _p(p) {};
+		// 前置递增
+		iterator& operator++() {
+			++_p;
+			return *this;
+		}
+		bool operator!=(const iterator& it) {
+			return _p != it._p;
+		}
+		// 解引用
+		char& operator*() {
+			return *_p;
+		}
+
+	private:
+		char* _p;  // 对位置(指针)的封装
+	};
+	// 容器的方法而非迭代器
+	iterator begin() { return iterator(_pstr); }
+	iterator end() { return iterator(_pstr + length()); }
+
+	
+
+private:
+	char* _pstr;
 
 	// operator+
 	friend String operator+(const String& s1, const String& s2);
@@ -101,22 +133,25 @@ ostream& operator<<(ostream& cout, const String& str) {
 	return cout;
 }
 
-int main(){
 
-	String str1;
-	String str2 = "aaa";
-	String str3 = "bbb";
-	String str4 = str2 + str3;
-	//String str5 = str2 + "ccc";
-	//String str6 = "ddd" + str2;
 
-	cout << str1 << "\n" << str2 << "\n" << str3 << endl;
+int main() {
+	string str1 = "12345678";
+	for (string::iterator it = str1.begin(); it != str1.end(); it++) {
+		// 这里不用 it < str1.end()；因为不同容器的各个元素的关联方式可能不同
+		// 可能是数组，链表，无法直接判断谁的位置大谁的位置小；
+		// 而it++可行是因为容器有对应的运算符重载实现
+		cout << *it;
+	}cout << endl;
 
-	/*if (str5 > str6) {
-		cout << "pdcHelloWorld" << endl;
-	}*/
+	String str2 = "12345678";
+	for (String::iterator it = str2.begin(); it != str2.end(); ++it) {
+		cout << *it;
+	}cout << endl;
 
-	cout << str3[2] << endl;
+	for (auto item : str2) {  // 底层依然是迭代器，需要手动实现
+		cout << item;
+	}cout << endl;
 
-	return 0;
+	// 为16的vector容器添加迭代器。。。
 }

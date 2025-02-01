@@ -27,10 +27,10 @@ template<typename T, typename Alloc = Allocator<T>>
 class vector {
 public:
 	// 需要把内存开辟和对象构造分开处理
-	vector(int size = 10) :
-		_last(_first),
-		_end(_first + size) {
+	vector(int size = 10) {
 		_first = _allocator.allocate(size); // 内存开辟
+		_last = _first;
+		_end = _first + size;
 	}
 
 	// 析构容器有效的元素，然后释放_first指向的堆内存
@@ -91,6 +91,12 @@ public:
 		_allocator.destroy(_last);
 	}
 
+	void show() const{
+		for (int* p = _first; p != _last; p++) {
+			cout << *p << " ";
+		}cout << endl;
+	}
+
 	bool full() const {
 		return _last == _end;
 	}
@@ -127,11 +133,42 @@ public:
 		_end = _first + newsize;
 	}
 
+	T operator[](int index) {
+		return _first[index];
+	}
+
+	class iterator {
+	public:
+		iterator(T* p = nullptr) 
+			:_p(p){
+		}
+		// !=
+		bool operator!=(const iterator& it) const{
+			return _p != it._p;
+		}
+		// 前置递增
+		iterator& operator++() {
+			++_p;
+			return *this;
+		}
+		// 解引用
+		T& operator*() {
+			return *_p;
+		}
+	private:
+		T* _p;
+	};
+
+	iterator begin() { return iterator(_first); }
+	iterator end() { return iterator(_last); }
+
 private:
 	T* _first;  // 指向数组起始的位置
 	T* _last;  // 指向数组中有效元素的后继位置
 	T* _end;  // 指向数组空间的后继位置
 	Alloc _allocator;  // 定义空间配置器
+
+	friend int main();
 };
 
 
@@ -162,6 +199,15 @@ int main() {
 	cout << "-------------------------" << endl;
 	v.pop_back();
 	cout << "-------------------------" << endl;
+
+	/*vector<int> vec;
+	for (int i = 0; i < 20; ++i) {
+		vec.push_back(rand() % 100);
+	}
+
+	for (vector<int>::iterator it = vec.begin(); it != vec.end(); ++it) {
+		cout << *it << " ";
+	}cout << endl;*/
 
 	return 0;
 }
