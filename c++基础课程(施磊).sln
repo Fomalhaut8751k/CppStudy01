@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "19 字符串对象的迭代
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "20 迭代器失效", "20 迭代器失效\20 迭代器失效.vcxproj", "{7D3A068B-79D2-4966-B862-6FA54D7255C0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "21 new和delete", "21 new和delete\21 new和delete.vcxproj", "{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -221,6 +223,14 @@ Global
 		{7D3A068B-79D2-4966-B862-6FA54D7255C0}.Release|x64.Build.0 = Release|x64
 		{7D3A068B-79D2-4966-B862-6FA54D7255C0}.Release|x86.ActiveCfg = Release|Win32
 		{7D3A068B-79D2-4966-B862-6FA54D7255C0}.Release|x86.Build.0 = Release|Win32
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Debug|x64.ActiveCfg = Debug|x64
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Debug|x64.Build.0 = Debug|x64
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Debug|x86.ActiveCfg = Debug|Win32
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Debug|x86.Build.0 = Debug|Win32
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Release|x64.ActiveCfg = Release|x64
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Release|x64.Build.0 = Release|x64
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Release|x86.ActiveCfg = Release|Win32
+		{67521A32-FD0A-4E17-9CF1-CDEC00AFB40A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
