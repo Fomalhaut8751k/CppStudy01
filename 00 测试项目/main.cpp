@@ -278,7 +278,7 @@ int main() {
 
 #endif
 
-#if 1  // 定位new
+#if 0  // 定位new
 int main() {
 	int* p = new int(10);
 	cout << *p << endl;
@@ -286,6 +286,95 @@ int main() {
 	cout << *p << endl;
 
 	delete p;
+	return 0;
+}
+#endif
+
+
+#if 0  // 初始化列表
+class A {
+public:
+	A() { cout << "A()" << endl; }
+	A(const A& a) { cout << "A(const A& a)" << endl; }
+	void operator=(const A& a) { cout << "operator(const A& a)" << endl; };
+	~A() { cout << "~A()" << endl; }
+};
+class B {
+public:
+	B(A& a):_a(a) {} 
+	~B() {}
+
+	A _a;  // 3. 相当于A _a = a; 第二次拷贝构造
+};
+
+int main() {
+	A a; // 1. 第一次默认构造
+	B b(a);  // 2. 非引用的参数传递方式，第一次拷贝构造
+	return 0;
+}
+#endif
+
+
+#if 0  // 为什么要使用空间配置器
+class A {
+public:
+	A() { _b = new B[10]; }
+private:
+	struct B {
+		B() { cout << "B()" << endl; }
+	};
+	B* _b;
+};
+
+int main() {
+	A a;
+	return 0;
+}
+#endif
+
+#if 1  // 对象池
+class Item {
+public:
+	Item(int val = 10):_val(val), _next(nullptr) { cout << "Item()" << endl; }
+	~Item() { cout << "~Item()" << endl; }
+
+	void* operator new(size_t size) {
+		if (_itemPool == nullptr) {
+			cout << "分配空间ing" << endl;
+			_itemPool = (Item*)new char[POOL_MAX_SIZE * sizeof(Item)];
+			Item* curItem = _itemPool;
+			for (; curItem < _itemPool + POOL_MAX_SIZE - 1; ++curItem) {
+				curItem->_next = curItem + 1;
+			}
+			curItem->_next = nullptr;
+		}
+		cout << "pdcHelloWorld" << endl;
+		Item* p = _itemPool;
+		_itemPool = _itemPool->_next;
+		return p;
+	}
+
+	void operator delete(void* p) {
+		Item* curItem = (Item*)p;
+		curItem->_next = _itemPool;
+		_itemPool = curItem;
+	}
+
+	static Item* _itemPool;
+	static const int POOL_MAX_SIZE = 1000;
+
+private:
+	int _val;
+	Item* _next;
+};
+
+Item* Item::_itemPool = nullptr;
+
+int main() {
+	for (int i = 0; i < 20; ++i) {
+		Item* it = new Item();
+		delete it;
+	}
 	return 0;
 }
 #endif
