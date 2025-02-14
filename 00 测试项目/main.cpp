@@ -1,5 +1,7 @@
 #include<iostream>
 
+#include "util.hpp"
+
 using namespace std;
 
 #if 0  // 测试1. memcpy遇上拷贝和赋值的正确处理
@@ -332,33 +334,34 @@ int main() {
 }
 #endif
 
-#if 1  // 对象池
+#if 0  // 对象池
 class Item {
 public:
-	Item(int val = 10):_val(val), _next(nullptr) { cout << "Item()" << endl; }
-	~Item() { cout << "~Item()" << endl; }
-
-	void* operator new(size_t size) {
-		if (_itemPool == nullptr) {
-			cout << "分配空间ing" << endl;
-			_itemPool = (Item*)new char[POOL_MAX_SIZE * sizeof(Item)];
-			Item* curItem = _itemPool;
-			for (; curItem < _itemPool + POOL_MAX_SIZE - 1; ++curItem) {
-				curItem->_next = curItem + 1;
-			}
-			curItem->_next = nullptr;
-		}
-		cout << "pdcHelloWorld" << endl;
-		Item* p = _itemPool;
-		_itemPool = _itemPool->_next;
-		return p;
+	Item(int val = 10):_val(val), _next(nullptr) { //cout << "Item()" << endl; 
+	}
+	~Item() { // cout << "~Item()" << endl;
 	}
 
-	void operator delete(void* p) {
+	//void* operator new(size_t size) {
+	//	if (_itemPool == nullptr) {
+	//		_itemPool = (Item*)new char[POOL_MAX_SIZE * sizeof(Item)];
+	//		//_itemPool = new Item[POOL_MAX_SIZE];
+	//		Item* curItem = _itemPool;
+	//		for (; curItem < _itemPool + POOL_MAX_SIZE - 1; ++curItem) {
+	//			curItem->_next = curItem + 1;
+	//		}
+	//		curItem->_next = nullptr;
+	//	}
+	//	Item* p = _itemPool;
+	//	_itemPool = _itemPool->_next;
+	//	return p;
+	//}
+
+	/*void operator delete(void* p) {
 		Item* curItem = (Item*)p;
 		curItem->_next = _itemPool;
 		_itemPool = curItem;
-	}
+	}*/
 
 	static Item* _itemPool;
 	static const int POOL_MAX_SIZE = 1000;
@@ -366,15 +369,103 @@ public:
 private:
 	int _val;
 	Item* _next;
+
+	friend int main();
 };
 
 Item* Item::_itemPool = nullptr;
 
 int main() {
-	for (int i = 0; i < 20; ++i) {
+	RangeCodeTime rct;
+	Item* _it = new Item();
+	rct.Begin();
+
+	for (int i = 0; i < 200000000; ++i) {
 		Item* it = new Item();
 		delete it;
 	}
+	delete _it;
+
+	cout << "#### 2*10^8个的对象的new和delete #### \n";
+	rct.End("不使用对象池耗时：");
+	return 0;
+}
+#endif
+
+
+#if 0
+class A {
+public:
+	static void add() {
+		_a++;
+	}
+
+	static int _a;
+};
+
+int A::_a = 0;
+
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		A::add();
+		cout << A::_a << endl;
+	}
+
+	return 0;
+}
+#endif
+
+#if 1  // 动态绑定，静态绑定，多态...
+/*
+1. 虚函数，虚函数表，虚函数指针.....
+	类内有虚函数，该类就会有一张对应的虚函数表在.rodata上，该类创建出来的
+	对象的内存空间的起始位置就会加一个虚函数指针，它可以访问到虚函数表
+
+	判断：cl main.cpp /d1reportSingleClassLayout____
+
+2. 静态绑定和动态绑定
+	静态绑定是指在编译阶段就确定了调用函数的版本(地址)，而动态是指在运行
+	阶段确定....
+	动态绑定需要通过指针或者引用来实现
+
+	判断：反汇编
+
+3. 多态
+*/
+
+class Base {
+public:
+	Base(int a) :_a(a) {};
+	virtual void show() { cout << "Base::show()" << endl; }
+
+protected:
+	int _a;
+};
+
+class Derive :public Base {
+public:
+	Derive(int a) :Base(a) { 
+		show(); 
+	};
+	void show() { cout << "Derive::show()" << endl; }
+};
+
+int main() {
+	Base b1(5003);
+	Derive d1(20);
+
+	Base* pb = &b1;
+	Derive* db = &d1;
+
+	b1.show();
+	d1.show();
+
+	pb->show();
+	db->show();
+
+	Derive* pd2 = (Derive*)&b1;
+	pd2->show();
+	
 	return 0;
 }
 #endif
