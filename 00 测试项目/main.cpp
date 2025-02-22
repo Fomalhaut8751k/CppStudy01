@@ -415,7 +415,7 @@ int main() {
 }
 #endif
 
-#if 1  // 动态绑定，静态绑定，多态...
+#if 0  // 动态绑定，静态绑定，多态...
 /*
 1. 虚函数，虚函数表，虚函数指针.....
 	类内有虚函数，该类就会有一张对应的虚函数表在.rodata上，该类创建出来的
@@ -433,19 +433,26 @@ int main() {
 3. 多态
 */
 
+void* operator new(size_t size) {
+	void* p = malloc(size);
+	cout << p << endl;
+	return p;
+}
+
 class Base {
 public:
-	Base(int a) :_a(a) {};
+	Base(int a) :_baseA(a) {
+		cout << "Base()" << endl;
+	};
 	virtual void show() { cout << "Base::show()" << endl; }
-
 protected:
-	int _a;
+	int _baseA;
 };
 
 class Derive :public Base {
 public:
-	Derive(int a) :Base(a) { 
-		show(); 
+	Derive(int a) :Base(a){ 
+		cout << "Derive()" << endl;
 	};
 	void show() { cout << "Derive::show()" << endl; }
 };
@@ -453,9 +460,14 @@ public:
 int main() {
 	Base b1(5003);
 	Derive d1(20);
+	d1.show();
+	Base& pb = b1;
+	pb.show();
 
-	Base* pb = &b1;
 	Derive* db = &d1;
+	db->show();
+
+	/*Base* pb = &b1;
 
 	b1.show();
 	d1.show();
@@ -464,8 +476,94 @@ int main() {
 	db->show();
 
 	Derive* pd2 = (Derive*)&b1;
-	pd2->show();
+	pd2->show();*/
 	
 	return 0;
 }
+#endif
+
+
+#if 0  // 派生类中的内存情况
+class A {
+public:
+	virtual void func() { cout << "call A::func()" << endl; }
+	void operator delete(void* ptr) {
+		cout << "operator delete p: " << ptr << endl;
+		free(ptr);
+	}
+
+	int ma;
+	virtual ~A() { cout << "call ~A()" << endl; }
+};
+
+class B : virtual public A{
+public:
+	void func() { cout << "call B::func()" << endl; }
+	void* operator new(size_t size) {
+		void* p = malloc(size);
+		cout << "   operator new p: " << p << endl;
+		return p;
+	}
+	int mb;
+	~B() { cout << "call ~B()" << endl; }
+};
+
+int main() {
+	// 直接d1	
+	//A* a = new B; 
+	B b;
+	A* a = &b;
+	cout << "           main p: " << a << endl;
+	//delete a;
+}
+
+#endif
+
+
+#if 1
+class Base {
+public:
+	Base(int a) :_a(a) { cout << "Base(int)" << endl; }
+	~Base() { cout << "~Base()" << endl; }
+protected:
+	int _a;
+};
+
+void* operator new(size_t size) {
+	void* p = malloc(size);
+	cout << p << endl;
+	return p;
+}
+
+class Derive: public Base{
+public:
+	Derive(int a, int b): Base(a), _b(b) {
+		cout << "Derive(int)" << endl;
+		//this->func();
+	}
+	~Derive() { cout << "~Derive()" << endl; }
+
+	//void show() {
+	//	cout << "a = " << _a << "\tb = " << _b << endl;
+	//	this->func();
+	//}
+
+	//virtual void func() {
+	//	cout << "pdchelloworld" << endl;
+	//}
+
+private:
+	int _b;
+
+	friend int main();
+};
+
+int main() {
+	Base* p = new Derive(10,20);
+	cout << p << endl;
+	system("pause");
+	delete p;
+	return 0;
+}
+
 #endif

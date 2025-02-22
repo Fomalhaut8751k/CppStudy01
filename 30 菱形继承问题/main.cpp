@@ -10,7 +10,7 @@ protected:
 	int ma;
 };
 
-class B :public A {
+class B : virtual public A {
 public:
 	B(int data) : A(data),mb(data) { cout << "B()" << endl; }
 	~B() { cout << "~B()" << endl; }
@@ -18,7 +18,7 @@ protected:
 	int mb;
 };
 
-class C : public A {
+class C : virtual public A {
 public:
 	C(int data) : A(data), mc(data) { cout << "C()" << endl; }
 	~C() { cout << "~C()" << endl; }
@@ -28,7 +28,7 @@ protected:
 
 class D : public B, public C {
 public:
-	D(int data) : B(data), C(data), md(data) { cout << "D()" << endl; }
+	D(int data) :A(data), B(data), C(data), md(data) { cout << "D()" << endl; }
 	~D() { cout << "~D()" << endl; }
 protected:
 	int md;
