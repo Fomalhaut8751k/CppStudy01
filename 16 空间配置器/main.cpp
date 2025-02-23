@@ -302,7 +302,7 @@ int main() {
 
 	auto it = vec.begin();
 	for (; it != vec.end(); ++it) {
-		it = vec.insert(it, *it - 1);
+		it = vec.insert(it, *it - 1); 
 		++it;
 	}
 

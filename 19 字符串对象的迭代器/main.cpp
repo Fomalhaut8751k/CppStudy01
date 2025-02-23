@@ -94,7 +94,7 @@ public:
 			return *_p;
 		}
 
-	private:
+	private: 
 		char* _p;  // 对位置(指针)的封装
 	};
 	// 容器的方法而非迭代器

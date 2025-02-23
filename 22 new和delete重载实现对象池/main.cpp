@@ -62,7 +62,7 @@ private:
 				}
 				p->_next = nullptr;  // 最后一个节点
 			}
-			QueueItem* p = _itemPool;
+			QueueItem* p = _itemPool; 
 			_itemPool = _itemPool->_next;
 			return p;
 		}

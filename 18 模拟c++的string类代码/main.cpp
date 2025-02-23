@@ -100,7 +100,7 @@ ostream& operator<<(ostream& cout, const String& str) {
 	cout << str._pstr;
 	return cout;
 }
-
+ 
 int main(){
 
 	String str1;

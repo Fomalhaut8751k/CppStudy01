@@ -36,7 +36,7 @@ int main() {
 #if 1  // 添加
 	auto it = v1.begin();
 	for (; it != v1.end(); ++it) {
-		if (*it % 3 == 0) {
+		if (*it % 3 == 0) { 
 			it = v1.insert(it, *it-1);  // 原来的被挤到后面去了，因此要加两次才能到下一个
 			++it;
 		}
